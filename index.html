@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-commerce Product Filter and Sort</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.cdnfonts.com/css/inter" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+        <h1 class="text-xl sm:text-2xl font-bold mb-4 text-center bg-indigo-100 p-4 rounded text-indigo-500">Mogu Mogu Product Filter and Sort</h1>
+        <div class="flex flex-col md:flex-row justify-between mb-4 p-2">
+            <!-- Category Filter -->
+            <select id="categoryFilter" class="p-2 rounded mb-2 md:mb-0 md:mr-2 border-4 border-indigo-500 bg-indigo-100">
+                <option value="">All Categories</option>
+                <option value="beverages">Beverages</option>
+            </select>
+
+            <!-- Sort Options -->
+            <select id="sortOptions" class="p-2 rounded border-4 border-indigo-500 bg-indigo-100">
+                <option value="">Sort By</option>
+                <option value="priceAsc">Price: Low to High</option>
+                <option value="priceDesc">Price: High to Low</option>
+                <option value="popularity">Popularity</option>
+            </select>
+        </div>
+
+        <!-- Product List -->
+        <div id="productList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+    </div>
+
+    <script>
+        // Sample Mogu Mogu product data with image URLs
+        const products = [
+            { id: 1, name: "Mogu Mogu Mango", category: "beverages", price: 50, popularity: 5, image: "Mogu Mogu Mango Coconut.JPG" },
+            { id: 2, name: "Mogu Mogu Lychee", category: "beverages", price: 50, popularity: 4, image: "Mogu Mogu Lychee Juice.jpg" },
+            { id: 3, name: "Mogu Mogu Strawberry", category: "beverages", price: 48, popularity: 3, image: "Mogu Mogu Strawberry Yogurt.JPG" },
+            { id: 4, name: "Mogu Mogu Melon", category: "beverages", price: 48, popularity: 4, image: "Mogu Mogu Melon Flavored Drink.JPG" },
+            { id: 5, name: "Mogu Mogu Coconut", category: "beverages", price: 45, popularity: 5, image: "Mogu Mogu Coconut.jpg" },
+        ];
+    
+        // Function to display products with animation
+        function displayProducts(products) {
+            const productList = document.getElementById("productList");
+            productList.innerHTML = ""; // Clear previous products
+    
+            products.forEach((product) => {
+                const productCard = `
+                <div class="bg-indigo-100 p-4 rounded-lg shadow-lg border-4 border-indigo-500 transition-transform duration-300 transform hover:-translate-y-1 animate-fadeIn">
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-32 object-contain bg-white rounded-t-lg mb-2">
+                    <h2 class="font-bold text-lg">${product.name}</h2>
+                    <p>Category: ${product.category}</p>
+                    <p>Price: P${product.price.toFixed(2)}</p>
+                    <p>Popularity: ${numberOfStar(product.popularity)}</p>
+                </div>`;
+                productList.innerHTML += productCard;
+            });
+        }
+    
+        function numberOfStar(star) {
+            return '⭐'.repeat(star);
+        }
+    
+        // Function to filter and sort products with fade-in effect
+        function filterAndSortProducts() {
+            const category = document.getElementById("categoryFilter").value;
+            const sortOption = document.getElementById("sortOptions").value;
+    
+            let filteredProducts = products;
+    
+            // Filter by category
+            if (category) {
+                filteredProducts = filteredProducts.filter((product) => product.category === category);
+            }
+    
+            // Sort by selected option
+            if (sortOption === "priceAsc") {
+                filteredProducts.sort((a, b) => a.price - b.price);
+            } else if (sortOption === "priceDesc") {
+                filteredProducts.sort((a, b) => b.price - a.price);
+            } else if (sortOption === "popularity") {
+                filteredProducts.sort((a, b) => b.popularity - a.popularity);
+            }
+    
+            // Add fade-out effect before displaying new products
+            const productList = document.getElementById("productList");
+            productList.classList.add("opacity-0");
+            
+            setTimeout(() => {
+                displayProducts(filteredProducts);
+                productList.classList.remove("opacity-0");
+                productList.classList.add("opacity-100");
+            }, 300); // Matches the duration of the fade-out effect
+        }
+    
+        // Event listeners for filters and sorting
+        document.getElementById("categoryFilter").addEventListener("change", filterAndSortProducts);
+        document.getElementById("sortOptions").addEventListener("change", filterAndSortProducts);
+    
+        // Initial display of products
+        displayProducts(products);
+    </script>
+    
+    <style>
+        #productList {
+            transition: opacity 0.3s ease-in-out;
+        }
+    
+        /* Custom animation for fading in */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px); /* Start slightly below */
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0); /* End at original position */
+            }
+        }
+    
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease forwards; /* Animation duration and easing */
+        }
+    </style>
+    
+
+    <!-- <script>
+        // Sample Mogu Mogu product data
+        const products = [
+            { id: 1, name: "Mogu Mogu Mango", category: "beverages", price: 50, popularity: 5 },
+            { id: 2, name: "Mogu Mogu Lychee", category: "beverages", price: 50, popularity: 4 },
+            { id: 3, name: "Mogu Mogu Strawberry", category: "beverages", price: 48, popularity: 3 },
+            { id: 4, name: "Mogu Mogu Grape", category: "beverages", price: 48, popularity: 4 },
+            { id: 5, name: "Mogu Mogu Coconut", category: "beverages", price: 45, popularity: 5 },
+        ];
+
+        // Function to display products
+        function displayProducts(products) {
+            const productList = document.getElementById("productList");
+            productList.innerHTML = ""; // Clear previous products
+
+            products.forEach((product) => {
+                const productCard = `
+            <div class="bg-indigo-100 p-4 rounded-lg shadow-lg border-4 border-indigo-500">
+                <h2 class="font-bold text-lg">${product.name}</h2>
+                <p>Category: ${product.category}</p>
+                <p>Price: P${product.price.toFixed(2)}</p>
+                <p>Popularity: ${numberOfStar(product.popularity)}</p>
+            </div>`;
+                productList.innerHTML += productCard;
+            });
+        }
+
+        function numberOfStar(star) {
+            switch (star) {
+                case 1:
+                    return "⭐";
+                    break;
+                case 2:
+                    return "⭐⭐";
+                    break;
+                case 3:
+                    return "⭐⭐⭐";
+                    break;
+                case 4:
+                    return "⭐⭐⭐⭐";
+                    break;
+                case 5:
+                    return "⭐⭐⭐⭐⭐";
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        // Function to filter and sort products
+        function filterAndSortProducts() {
+            const category = document.getElementById("categoryFilter").value;
+            const sortOption = document.getElementById("sortOptions").value;
+
+            let filteredProducts = products;
+
+            // Filter by category
+            if (category) {
+                filteredProducts = filteredProducts.filter((product) => product.category === category);
+            }
+
+            // Sort by selected option
+            if (sortOption === "priceAsc") {
+                filteredProducts.sort((a, b) => a.price - b.price);
+            } else if (sortOption === "priceDesc") {
+                filteredProducts.sort((a, b) => b.price - a.price);
+            } else if (sortOption === "popularity") {
+                filteredProducts.sort((a, b) => b.popularity - a.popularity);
+            }
+
+            displayProducts(filteredProducts);
+        }
+
+        // Event listeners for filters and sorting
+        document.getElementById("categoryFilter").addEventListener("change", filterAndSortProducts);
+        document.getElementById("sortOptions").addEventListener("change", filterAndSortProducts);
+
+        // Initial display of products
+        displayProducts(products);
+    </script> -->
+</body>
+
+</html>
